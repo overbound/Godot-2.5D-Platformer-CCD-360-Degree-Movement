@@ -142,7 +142,7 @@ The slope factor (`slopeFactor`), which in classic Sonic pulls the player downhi
 
 The classic Sonic physics system uses two ground sensors (left and right) positioned at the player's feet to detect the surface angle. Each sensor can hit a different surface, and the resulting angle is averaged or chosen based on which sensor is active. This allows for more nuanced behavior on uneven terrain, such as one foot on a slope and one on flat ground.
 
-This engine uses a single ground detection point instead. The player's ground angle is determined by a single raycast downward along the ground normal, meaning there is no left/right sensor differentiation. This simplifies the collision model but results in less accurate behavior on uneven or transitioning surfaces compared to the original Sonic physics.
+This engine uses a single ground detection point instead. The player's ground angle is determined by a single raycast downward along the ground normal, meaning there is no left/right sensor differentiation. This simplifies the collision model and provides smoother rotation across surfaces, but results in less accurate behavior on uneven or transitioning terrain compared to the original Sonic physics.
 
 
 ## Credits
