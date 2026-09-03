@@ -134,9 +134,9 @@ In the classic Sonic Physics Guide, when the player runs up a slope steeper than
 
 In the classic Sonic Physics Guide, when the player is on a wall or ceiling and their speed drops below a threshold, they should detach and fall. This engine does not implement that behavior. The player will remain attached to walls and ceilings regardless of their speed. The `fallThreshold` variable and associated fall-off logic have been removed from the codebase.
 
-### Slope Factor Removed
+### Slope Factor Not Implemented
 
-The slope factor (`slopeFactor`), which in classic Sonic pulls the player downhill on sloped surfaces, has been removed. On walls and ceilings at low speeds it caused the player's ground speed to oscillate across zero, which made the sprite rotation flip direction each frame and triggered face-edge jitter on curved surfaces. Without the fall-off behavior (see above) to resolve this, the slope factor had to be removed entirely.
+The slope factor (`slopeFactor`), which in classic Sonic pulls the player downhill on sloped surfaces, is not implemented. On walls and ceilings at low speeds it caused the player's ground speed to oscillate across zero, which made the sprite rotation flip direction each frame and triggered face-edge jitter on curved surfaces. Without the fall-off behavior (see above) to resolve this, the slope factor cannot be implemented at this time.
 
 ### Single Angle Point vs. Dual Sensor Model
 
