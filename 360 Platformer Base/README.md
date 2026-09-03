@@ -6,7 +6,7 @@ Godot 4.5 platformer movement inspired by classic Sonic games, featuring 360-deg
 
 - **360-degree ground movement** -- player walks on floors, walls, and ceilings with smooth surface transitions
 - **Sonic-style physics** -- acceleration, deceleration, and friction
-- **Face-graph collision** -- CCD (continuous collision detection) with adjacency-aware face tracking for seamless traversal across curved geometry (loops, quarter pipes)
+- **Continuous Collision Detection (CCD)** -- Triangle meshes are preprocessed into face-graph adjacency maps so the engine can track which face the player is on and detect edge exits in real time. Movement is projected onto the current face's tangent plane, and on edge crossing the player transitions to the adjacent face with miter correction to stay snapped to the surface.
 - **Jump system** -- variable-height jump with hold-to-jump-higher, air jumps, jump grace period, and face exclusion to prevent re-landing on the same surface
 - **Camera system** -- dead-zone following, speed-based lookahead, screen shake, entrance animations, and priority-based camera limit zones
 - **Action/state machine** -- modular action system (`ActionParent`) for player states (Run, Jump) and enemy behaviors
@@ -18,59 +18,55 @@ Godot 4.5 platformer movement inspired by classic Sonic games, featuring 360-deg
 ## Project Structure
 
 ```
-nomorerobots_godot/
-  project.godot              # Godot project config (4.5, GL Compatibility)
-  LICENSE                    # MIT License
-  scenes/
-    player.tscn              # Main game scene (player, camera, level, enemies)
-    level_0_circle_in.tscn   # Circle-in level piece scene
-  Scripts/
-    player/
-      Player.gd              # Main player controller (Node3D)
-      PlayerPhysics.gd       # 360-degree physics engine
-      PlayerAnimation.gd     # Player sprite animation handler
-      CameraController.gd    # Camera follow, lookahead, shake, limits
-      CameraLimitZone.gd     # Area3D-based camera boundary zones
-      ActionParent.gd        # Base class for player actions
-      ActionRun.gd           # Ground/air movement action
-      ActionJump.gd          # Jump action with variable height
-      ActionableInput.gd     # Maps inputs to actions
-    Input/
-      InputHandle.gd         # Autoloaded input manager
-      ButtonHandle.gd        # Single button state tracking
-      AxisHandle.gd          # Axis state tracking (two-button composite)
-    enemies/
-      EnemiesParent.gd       # Base enemy class (CharacterBody3D)
-      EnemyActionParent.gd   # Base class for enemy actions
-      rog/
-        RogEnemy.gd          # Hopping enemy
-        RogAnimation.gd      # Rog sprite animation
-        RogActionIdle.gd     # Rog idle/wait state
-        RogActionHop.gd      # Rog hop movement state
-      sealbot/
-        SealbotEnemy.gd      # Patrolling enemy
-        SealbotAnimation.gd  # Sealbot sprite animation
-        SealbotActionPatrol.gd # Sealbot patrol with wall/edge detection
-    animation/
-      AnimationHandler.gd    # Frame-based animation state machine
-      AnimationSet.gd        # Animation data (loop, speed, frames, texture)
-    global/
-      Draw3D.gd              # Autoloaded debug line/point drawing utility
-      FrameCounter.gd        # Autoloaded physics frame counter
-  Actors/
-    Enemy/
-      Rog.tscn               # Rog enemy scene (CharacterBody3D + Sprite3D)
-      SealbotEnemy.tscn      # Sealbot enemy scene (CharacterBody3D + Sprite3D)
-  models/
-    level0_Circle_in.blend   # Blender source for circle-in level geometry
-    levelblock.blend          # Blender source for level block geometry
-    make_loop.py              # Blender script to generate loop-de-loop mesh
-    loop_deloop_addon.py      # Blender addon: Add > Mesh > Loop De Loop
-    quarterpipe_addon.py      # Blender addon: Add > Mesh > Quarter Pipe
-  sprites/
-    enemies/
-      smallrog.png            # Rog enemy spritesheet (7 frames)
-      sealbot.png             # Sealbot enemy spritesheet (7 frames)
+project.godot              # Godot project config (4.5, GL Compatibility)
+scenes/
+  game.tscn                # Main game scene
+  level_0_circle_in.tscn   # Circle-in level piece scene
+Scripts/
+  player/
+    Player.gd              # Main player controller (Node3D)
+    PlayerPhysics.gd       # 360-degree physics engine
+    PlayerAnimation.gd     # Player sprite animation handler
+    CameraController.gd    # Camera follow, lookahead, shake, limits
+    CameraLimitZone.gd     # Area3D-based camera boundary zones
+    ActionParent.gd        # Base class for player actions
+    ActionRun.gd           # Ground/air movement action
+    ActionJump.gd          # Jump action with variable height
+    ActionableInput.gd     # Maps inputs to actions
+  Input/
+    InputHandle.gd         # Autoloaded input manager
+    ButtonHandle.gd        # Single button state tracking
+    AxisHandle.gd          # Axis state tracking (two-button composite)
+  enemies/
+    EnemiesParent.gd       # Base enemy class (CharacterBody3D)
+    EnemyActionParent.gd   # Base class for enemy actions
+    rog/
+      RogEnemy.gd          # Hopping enemy
+      RogAnimation.gd      # Rog sprite animation
+      RogActionIdle.gd     # Rog idle/wait state
+      RogActionHop.gd      # Rog hop movement state
+    sealbot/
+      SealbotEnemy.gd      # Patrolling enemy
+      SealbotAnimation.gd  # Sealbot sprite animation
+      SealbotActionPatrol.gd # Sealbot patrol with wall/edge detection
+  animation/
+    AnimationHandler.gd    # Frame-based animation state machine
+    AnimationSet.gd        # Animation data (loop, speed, frames, texture)
+  global/
+    Draw3D.gd              # Autoloaded debug line/point drawing utility
+    FrameCounter.gd        # Autoloaded physics frame counter
+Actors/
+  player.tscn              # Player scene (CharacterBody3D)
+  Enemy/
+    Rog.tscn               # Rog enemy scene (CharacterBody3D + Sprite3D)
+    SealbotEnemy.tscn      # Sealbot enemy scene (CharacterBody3D + Sprite3D)
+models/
+  level0_Circle_in.blend   # Blender source for circle-in level geometry
+  levelblock.blend          # Blender source for level block geometry
+sprites/
+  enemies/
+    smallrog.png            # Rog enemy spritesheet (7 frames)
+    sealbot.png             # Sealbot enemy spritesheet (7 frames)
 ```
 
 ## Architecture
@@ -111,14 +107,6 @@ Both player and enemies use an action-based state machine:
 - `ActionParent` / `EnemyActionParent` define `beginAction()`, `action()`, `endAction()`, `canPerform()`, `canEnd()`, `postPhysics()`, `physicsSkip()`
 - Actions are swapped via buffered transitions to prevent mid-frame state corruption
 - `ActionableInput` maps button/axis combinations to specific actions
-
-### Blender Tools
-
-Three Python scripts in `models/` for generating level geometry:
-
-- **`make_loop.py`** -- Standalone script that creates a loop-de-loop mesh in the Blender scripting workspace
-- **`loop_deloop_addon.py`** -- Blender addon (Add > Mesh > Loop De Loop) with configurable radius, segments, wall depth, width, floor height, and cap height
-- **`quarterpipe_addon.py`** -- Blender addon (Add > Mesh > Quarter Pipe) with configurable arc radius, depth, and segments
 
 ## Controls
 
