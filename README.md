@@ -1,4 +1,4 @@
-# Sonic 360 Engine Base
+# 360 Engine Base
 
 Godot 4.5 platformer movement inspired by classic Sonic games, featuring 360-degree surface traversal. Built with GDScript using a 2.5D approach (3D engine, 2D gameplay plane).
 
