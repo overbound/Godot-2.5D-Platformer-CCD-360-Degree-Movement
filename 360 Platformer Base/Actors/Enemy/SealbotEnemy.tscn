@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://rvtuycmas42j"]
+
+[ext_resource type="Script" uid="uid://bb7k0f6t2du8q" path="res://Scripts/enemies/sealbot/SealbotEnemy.gd" id="1_sealbot"]
+[ext_resource type="Texture2D" uid="uid://bxhcvyfyh1krq" path="res://sprites/enemies/sealbot.png" id="2_sealbot"]
+
+[node name="SealbotEnemy" type="Node3D"]
+script = ExtResource("1_sealbot")
+
+[node name="SpriteParent" type="Node3D" parent="."]
+
+[node name="Sprite" type="Sprite3D" parent="SpriteParent"]
+pixel_size = 0.028
+texture = ExtResource("2_sealbot")
+hframes = 7

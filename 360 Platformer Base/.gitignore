@@ -1,0 +1,33 @@
+# Ignore Godot 4 import cache and editor state
+.godot/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*~
+
+# Blender backup files
+*.blend1
+
+# Map autosave files  
+maps/autosave/
+
+# Godot dependency files
+*.depren
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/

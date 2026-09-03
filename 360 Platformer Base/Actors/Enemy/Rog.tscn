@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgfnevandyre8"]
+
+[ext_resource type="Script" uid="uid://cc5pln0ccljwx" path="res://Scripts/enemies/rog/RogEnemy.gd" id="1_3ylmk"]
+[ext_resource type="Texture2D" uid="uid://cjk3wdg3xe8pw" path="res://sprites/enemies/smallrog.png" id="2_fxgoy"]
+
+[node name="SmallRogEnemy" type="Node3D"]
+script = ExtResource("1_3ylmk")
+
+[node name="SpriteParent" type="Node3D" parent="."]
+transform = Transform3D(0.9999987, 0, 0, 0, 0.9999987, 0, 0, 0, 0.9999987, 0, 0, 0)
+
+[node name="Sprite" type="Sprite3D" parent="SpriteParent"]
+pixel_size = 0.0325
+texture = ExtResource("2_fxgoy")
+hframes = 7

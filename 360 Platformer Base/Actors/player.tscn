@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c6hyr12ly7p4u"]
+
+[ext_resource type="Script" uid="uid://kamgpj4ode5m" path="res://Scripts/player/Player.gd" id="1_y2lmi"]
+[ext_resource type="Texture2D" uid="uid://c5qgh3uqg6hps" path="res://icon.svg" id="2_xk7p5"]
+
+[node name="Player" type="Node3D"]
+script = ExtResource("1_y2lmi")
+
+[node name="SpriteParent" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.5)
+
+[node name="Sprite" type="Sprite3D" parent="SpriteParent"]
+pixel_size = 0.06
+texture = ExtResource("2_xk7p5")
