@@ -152,4 +152,4 @@ This engine uses a single ground detection point instead. The player's ground an
 
 ## Disclaimer
 
-This engine is provided as-is. The physics implementation is inspired by classic Sonic games but is not a 1:1 recreation of the original physics. Values, behaviors, and edge cases may differ from the official Sonic engine. Use this as a starting point for your own projects and adjust to fit your needs.
+This engine is provided as-is. The physics implementation is inspired by classic Sonic games but is not a 1:1 recreation of the original physics. Values, behaviors, and edge cases may differ from the official Sonic engine.
